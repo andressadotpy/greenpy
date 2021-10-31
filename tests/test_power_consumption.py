@@ -33,6 +33,13 @@ def test_formatter_dont_get_not_matching_device():
 def test_read_usage_file():
     intel = IntelCPUPowerConsumption()
     directory_name = "intel-rapl:0"
-    usage = intel._read_usage(directory_name)
+    usage = intel._read_energy_usage(directory_name)
 
     assert usage is not None
+
+def test_measuring_power():
+    intel = IntelCPUPowerConsumption()
+    measurements = intel.get_measurement_for_each_rapl_device()
+
+    assert isinstance(measurements, list)
+    assert len(measurements) != 0
