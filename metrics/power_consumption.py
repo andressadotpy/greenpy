@@ -14,12 +14,19 @@ class PowerConsumption:
     def measure(self, func: Callable):
         ...
 
-class IntelCPUPowerConsumption:
+class IntelCPUPowerConsumption(PowerConsumption):
     
     def __init__(self):
         self._devices = []
         self._rapl_devices = []
         self._set_devices()
+
+    def measure(self, func: Callable):
+        super().measure(func)
+        measure_before_func_call = self.get_measurement_for_each_rapl_device()
+        func()
+        measure_after_func_call = self.get_measurement_for_each_rapl_device()
+        return measure_after_func_call - measure_before_func_call
 
     def _set_devices(self):
         rapl_directories = list(filter(lambda x: ':' in x, os.listdir(RAPL_PATH)))
